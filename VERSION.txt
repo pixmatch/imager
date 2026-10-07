@@ -1,0 +1,2 @@
+PixMatch 3.15.1
+Deployment build fix + multi-format Download Center + scientific CSV column correction
