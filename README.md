@@ -1,23 +1,29 @@
-# PixMatch Scientific Engine v4
+# Welcome to your Lovable project
 
-This folder is the refactored scientific execution layer for PixMatch. It is intentionally independent of the UI.
+This project was built with [Lovable](https://lovable.dev).
 
-## Pipeline
+## Build with Lovable
 
-ImageData → RGB → XYZ → CIELAB → perceptual phase segmentation → morphology → connected components → boundary extraction → calibrated physical quantity → confidence → uncertainty → MeasurementResult → batch audit/export.
+Open your project in the [Lovable editor](https://lovable.dev) and keep building.
 
-## Main entry points
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
+- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
 
-- `src/scientific/execution/processFrame.ts` — one-frame execution.
-- `src/scientific/execution/processBatch.ts` — safe batch execution + optional interpolation.
-- `src/scientific/worker/client.ts` — browser Web Worker boundary.
-- `src/scientific/types.ts` — canonical scientific contracts.
-- `src/scientific/export/export.ts` — reproducible CSV/JSON output.
+## Development
 
-## Integration
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
-Replace the existing scientific execution path with `runInWorker()` from `src/scientific/worker/client.ts`. Keep React/UI state out of the scientific engine.
+```sh
+git clone <this-repository-url>
+cd <repository-name>
+npm i
+npm run dev
+```
 
-## Important
+## Built with
 
-The reference frame should be converted by the application layer into a `MeasurementDefinition` (phase, appearance, ROI/spatial model, geometry and quantity). Do not use a raw click/seed as the final scientific definition.
+- TanStack Start
+- TypeScript
+- React
+- Tailwind CSS
