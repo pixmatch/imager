@@ -429,3 +429,7 @@
   }
   .pix-download-btn:active { transform: translateY(1px); }
 }
+
+.download-menu-item { width: 100%; display: block; border-radius: 6px; padding: 8px 9px; text-align: left; font-size: 11px; color: #dbeafe; background: transparent; }
+.download-menu-item:hover:not(:disabled) { background: rgba(37, 124, 214, .22); color: #fff; }
+.download-menu-item:disabled { opacity: .38; cursor: not-allowed; }

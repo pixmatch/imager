@@ -367,14 +367,18 @@ export function detectRegion(
   for (let k = 0; k < opts.smooth; k++) mask = erode(mask, w, h);
   if (opts.fillHoles) mask = fillHoles(mask, w, h);
 
-  let area = 0, cxs = 0, cys = 0;
-  let minX = w, minY = h, maxX = 0, maxY = 0;
+  let area = 0, cxs = 0, cys = 0, sumLFinal = 0, sumAFinal = 0, sumBFinal = 0;
+  let minX = w, minY = h, maxX = -1, maxY = -1;
   for (let y = 0; y < h; y++)
     for (let x = 0; x < w; x++) {
-      if (!mask[y * w + x]) continue;
+      const i = y * w + x;
+      if (!mask[i]) continue;
       area++;
       cxs += x;
       cys += y;
+      sumLFinal += field.L[i];
+      sumAFinal += field.A[i];
+      sumBFinal += field.B[i];
       if (x < minX) minX = x;
       if (y < minY) minY = y;
       if (x > maxX) maxX = x;
@@ -399,7 +403,7 @@ export function detectRegion(
     circularity: perimeter > 0 ? Math.min(1, (4 * Math.PI * area) / (perimeter * perimeter)) : 0,
     feretMax,
     feretMin,
-    meanLab: { L: sumL / count, a: sumA / count, b: sumB / count },
+    meanLab: { L: sumLFinal / area, a: sumAFinal / area, b: sumBFinal / area },
     seedLab,
   };
 }
@@ -437,6 +441,28 @@ export function relocateSeed(
     }
   }
   return best;
+}
+
+/**
+ * Reference-anchored relocation with an optional temporal prior. Both candidates
+ * are scored against the immutable reference colour; the prior never supplies a
+ * mask or hard constraint, so a bad previous frame cannot lock the next frame.
+ */
+export function relocateSeedWithSoftPrior(
+  field: LabField,
+  reference: LAB,
+  referencePoint: Pt,
+  priorPoint: Pt | undefined,
+  searchRadius: number,
+  metric: "cie76" | "ciede2000",
+  lightnessWeight = 1,
+  referenceRgb?: { r: number; g: number; b: number },
+  rgbWeight = 0,
+) {
+  const ref = relocateSeed(field, reference, referencePoint, searchRadius, metric, lightnessWeight, referenceRgb, rgbWeight);
+  if (!priorPoint) return ref;
+  const prior = relocateSeed(field, reference, priorPoint, searchRadius, metric, lightnessWeight, referenceRgb, rgbWeight);
+  return prior.delta + 0.75 < ref.delta ? prior : ref;
 }
 
 /** 256-bin histogram of the weighted-gray channel for the whole frame or ROI. */
