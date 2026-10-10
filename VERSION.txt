@@ -1,1 +1,2 @@
-3.11.3
+PixMatch 3.16.0
+3.15.1 + Scientific Engine v4 merged (src/scientific/, UI-independent, not yet wired into the UI)
